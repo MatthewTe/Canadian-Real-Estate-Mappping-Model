@@ -1,16 +1,43 @@
 # Package Imports:
 import requests
-from bs4 import BeautifulSoup
+import bs4
 import pandas as pd
 
 
 # Function that scrapes the kijiji website for each housing listing in the Kelowna area
 def kijiji_href_get(url):
-    """ # TODO: Insert docstring documentation PEP-8 """
-    # Connecting to kijiji and parsing w/ bs4:
-    request = requests.get(url, timeout=5)
+    '''
+    The function that extracts href links for the listings on a single kijiji page
 
-    page_1 = BeautifulSoup(requests.content, 'html.parser')
-    print(page_1)
+    Parameters
+    ----------
+    url: str
+        The url is the link to the webpage where the html is parsed
 
-kijiji_href_get('https://www.kijiji.ca/b-for-sale/kelowna/c30353001l1700228')
+    Returns
+    -------
+    href_list
+        A list containing all relevant href links from the webpag
+    '''
+
+    # Getting each individual div tag containing links to each real-estate listing page:
+    res = requests.get(url)
+    soup = bs4.BeautifulSoup(res.text)
+    div = soup.findAll('div', {'class': 'search-item regular-ad'})
+
+    # For loop that goes through the ResultSet and extacts the href-links and appends
+    # them to a list
+    counter = 0
+    href_list = []
+    for e in div:
+        # Searching for imbeded <a> tag, class ='title enable-search-navigation-flag':
+        href_link = 'kijiji.ca' + div[counter].findAll('a', {'class':
+        'title enable-search-navigation-flag' },href=True)[0]['href']
+
+        # Creating list of href links:
+        href_list.append(href_link)
+        counter = counter + 1
+
+    return href_list
+
+print(kijiji_href_get('https://www.kijiji.ca/b-for-sale/kelowna/c30353001l1700228'))
