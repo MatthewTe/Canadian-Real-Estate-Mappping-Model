@@ -6,15 +6,13 @@ import time
 import datetime
 
 
-# Function that scrapes the kijiji website for each housing listing in the Kelowna area
 def page_2_dataframe(url):
-    '''
-    The function that returns a dataframe of basic real-estate listings on kijiji
+    '''The function that returns a dataframe of basic real-estate listings on kijiji
 
     Parameters
     ----------
-        url : str
-            The url link of the kijiji listings page to be parsed
+    url : str
+        The url link of the kijiji listings page to be parsed
 
     Returns
     --------
