@@ -9,7 +9,7 @@ class Kijiji:
     '''
     The Object that contains the scraped Real-Estae listings data for Kijiji.com
     '''
-    
+
     def page_2_dataframe(url):
         '''The function that returns a dataframe of basic real-estate listings on kijiji
 
@@ -129,7 +129,7 @@ class Kijiji:
 
         return next_page_link
 
-    def kijiji_get_data(init_url, num_pages):
+    def get_data(init_url, num_pages):
         '''Constructs a dataframe containing the the page_2_dataframe() data for
             multiple pages of kijiji real-estae listings
 
@@ -176,4 +176,4 @@ class Kijiji:
 
                 return df_main
 
-#test = Kijiji.kijiji_get_data('https://www.kijiji.ca/b-for-sale/kelowna/c30353001l1700228',10)
+#test = Kijiji.('https://www.kijiji.ca/b-for-sale/kelowna/c30353001l1700228',10)
