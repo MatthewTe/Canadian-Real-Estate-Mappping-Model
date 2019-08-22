@@ -69,3 +69,6 @@ class Kelowna_Database():
         df = pd.read_sql(query_string, self.con)
 
         return df
+
+
+Kelowna_Database().Kijiji_main_push(200)

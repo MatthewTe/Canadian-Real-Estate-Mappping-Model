@@ -163,9 +163,14 @@ class Kijiji:
 
                 df_main = df_main.append(Kijiji.page_2_dataframe(new_page_url),
                 ignore_index=True)
-                new_page_url = Kijiji.get_next_page(new_page_url)
 
-                counter = counter + 1
+                # Ending the loop if loop reaches the end of the listings list:
+                try:
+                    new_page_url = Kijiji.get_next_page(new_page_url)
+                    counter = counter + 1
+                except:
+                    return df_main
+                    break
 
             # for the final listings page and dataframe return:
             else:
