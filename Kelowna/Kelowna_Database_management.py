@@ -50,7 +50,7 @@ class Kelowna_Database():
         Kijiji.get_data(init_url, num_pages).to_sql('Kijiji_Data', con=self.con,
         if_exists='replace')
 
-    def Kijiji_Data_query(query_string):
+    def Kijiji_Data_query(self, query_string):
         '''Reading data from the Kijiji_Real-Estate_db based on a specific sql
             query
 
@@ -69,3 +69,14 @@ class Kelowna_Database():
         df = pd.read_sql(query_string, self.con)
 
         return df
+
+    def Kijiji_main_update():
+        '''Updates the Kelowna_Database by writing 10 pages from the Kijij
+            listings to the database
+
+            Pushing the most recent 10 pages of the database will create overlap
+            within the database. This is not an issue as all data read from the
+            db is read using a pandas .unique() function.
+        '''
+        Kijiji.get_data(init_url, 10).to_sql('Kijiji_Data', con=self.con,
+        if_exists='append')

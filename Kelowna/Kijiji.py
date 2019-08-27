@@ -29,7 +29,7 @@ class Kijiji:
 
         # Getting each individual div tag containing links to each real-estate listing page:
         res = requests.get(url)
-        soup = bs4.BeautifulSoup(res.text)
+        soup = bs4.BeautifulSoup(res.text, 'lxml')
         div = soup.findAll('div', {'class': 'search-item regular-ad'})
 
         # Creating the empty dataframe:
@@ -181,4 +181,5 @@ class Kijiji:
 
                 return df_main
 
-#test = Kijiji.('https://www.kijiji.ca/b-for-sale/kelowna/c30353001l1700228',10)
+#test = Kijiji.get_data('https://www.kijiji.ca/b-for-sale/kelowna/c30353001l1700228',2)
+#print(test)
