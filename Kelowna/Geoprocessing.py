@@ -7,6 +7,37 @@ import geopy
 from geopy.geocoders import OpenCage
 from geopy import distance
 
+class University(object):
+    '''
+    The University object contains relevant geospatial data about a campus.
+
+    Parameters
+    -----------
+    latitude : float
+        The latitude variable stores the latitude co-ordinate for the centre of
+        campus
+
+    longitude : float
+        The longitude variable stores the longitude co-ordinate for the
+        centre of campus
+
+    Address : str
+        The string contains the offical full address of the University campus
+
+    University_name : str
+        The string contains the name of the University
+
+    Campus : str
+        THe string contains the specific campus that the object represents
+    '''
+    def __init__(self, latitude, longitude, Address, University_name, Campus):
+        self.latitude = latitude
+        self.longitude = longitude
+        self.University_name = University_name
+        self.Campus = Campus
+        self.Address = Address
+
+
 
 class Processed_Dataframe():
     '''
@@ -61,71 +92,64 @@ class Processed_Dataframe():
 
         return dataframe
 
-    def Add_University(dataframe, University):
+    def Add_University(dataframe):
+
         ''' The method adds a column in the Processed_Dataframe that contains
         the geodesic distance from a Real_Estate listing to a University campus
 
-    Parameters
-    ----------
-    dataframe : pandas dataframe
-        The dataframe that is read from the Kelowna_Database containing
-        Kelowna Real_Estate raw data
+        Parameters
+        ----------
+        dataframe : pandas dataframe
+            The dataframe that is read from the Kelowna_Database containing
+            Kelowna Real_Estate raw data
 
-    University : University(object)
-        The University object that contains the geospatial data for the
-        University campus that is being compared to the Real_Estate data
+            Returns
+            -------
+            dataframe
+            The dataframe with distance from university added to said dataframe
+            '''
 
-    Returns
-    -------
-    dataframe
-        The dataframe with distance from university added to said dataframe
-        '''
+        # Creating an instance of the University() object for the UBC Okanagan campus:
+        UBC_Okanagan = University(49.941015, -119.396914,
+        '3333 University Way, Kelowna, BC V1V 1V7, Canada', 'UBC', 'Okanagan')
 
-    # TODO: Write Iterative loop / lamda function to calculate the university
-    # distance.
-
-    pass
+        Univerity_Location = (UBC_Okanagan.latitude, UBC_Okanagan.longitude)
 
 
-class University(object):
-    '''
-    The University object contains relevant geospatial data about a campus.
+        # Variables for the Iterative loops:
+        Univerity_Distance_List = []
+        counter = 0
+        l = len(dataframe)
+        dataframe.dropna(inplace=True)
 
-    Parameters
-    -----------
-    latitude : float
-        The latitude variable stores the latitude co-ordinate for the centre of
-        campus
+        # Creating a loop to iterate through the dataframe adding UBC distance:
+        for i in range(l):
 
-    longitude : float
-        The longitude variable stores the longitude co-ordinate for the
-        centre of campus
+            # Creating the location for an address:
+            try:
+                Real_Estate_location = (dataframe['Latitude'][counter],
+                dataframe['Longitude'][counter])
 
-    Address : str
-        The string contains the offical full address of the University campus
+                # Calculating distance:
+                Distance_from_University = distance.distance(Real_Estate_location,
+                 Univerity_Location)
 
-    University_name : str
-        The string contains the name of the University
+            # If Rea;Real_Estate_location errors out:
+            except:
+                Distance_from_University = 'NaN'
 
-    Campus : str
-        THe string contains the specific campus that the object represents
-    '''
-    def __init__(self, latitude, longitude, Address, University_name, Campus):
-        self.latitude = latitude
-        self.longitude = longitude
-        self.University_name = University_name
-        self.Campus = Campus
-        self.Address = Address
+            Univerity_Distance_List.append(Distance_from_University)
 
-# Creating an instance of the University() object for the UBC Okanagan campus:
-UBC_Okanagan = University(49.941015, -119.396914,
- '3333 University Way, Kelowna, BC V1V 1V7, Canada', 'UBC', 'Okanagan')
+            counter = counter + 1
 
+        dataframe['UBC_Distance'] = Univerity_Distance_List
+
+        return dataframe
 
 
 # Code for Testing
 test_dataframe = Kelowna_Database().Kijiji_Data_query('SELECT * FROM Kijiji_Data')
 df = test_dataframe[0:10]
 df = Processed_Dataframe.Add_Geotags(df)
-#df = Processed_Dataframe.Add_University(df, UBC_Okanagan)
-print(df)
+df = Processed_Dataframe.Add_University(df)
+print(df['UBC_Distance'], df['Latitude'], df['Longitude'], df['Geocode_Address'])
