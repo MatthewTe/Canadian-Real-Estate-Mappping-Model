@@ -133,6 +133,9 @@ def Add_University(dataframe):
 
     return dataframe
 
+def Add_Interest_rates(dataframe):
+    # TODO: Write the method that adds interests rates
+    pass
 
 class Processed_Dataframe():
     '''
