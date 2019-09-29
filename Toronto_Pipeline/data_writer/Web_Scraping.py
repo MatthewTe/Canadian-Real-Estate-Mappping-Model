@@ -42,7 +42,6 @@ class Point_2_Homes(object):
 
 
         # Connecting to webpage:
-        # Using selenium to bypass Incapsula:
 
         # Header to request for Incapsula:
         headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)\
@@ -96,10 +95,14 @@ class Point_2_Homes(object):
 
             # Address '     xxxx, xxxx, xxxx' -> xxxx, xxxx, xxxx:
             Address = Address.replace('        ', '')
+            Address = Address.replace('\r', '')
+            Address = Address.replace('\n', '')
             Address = Address.rstrip()
 
             # Type '           xxx' -> xxxx:
             Type = Type.replace(' ', '')
+            Type = Type.replace('\n', '')
+            Type = Type.replace('\r', '')
             Type = Type.rstrip()
 
             # Price '$xxx,xxx CAD' -> xxxxxx:
@@ -107,28 +110,33 @@ class Point_2_Homes(object):
             Price = Price.replace(',', '')
             Price = Price.replace('CAD', '')
             Price = Price.replace(' ', '')
+            Price = Price.replace('\n', '')
             Price = Price.rstrip()
 
             # Beds 'x Beds' -> x:
             Beds = Beds.replace('Beds', '')
             Beds = Beds.replace(' ', '')
+            Beds = Beds.replace('\n', ' ')
             Beds = Beds.rstrip()
 
             # Baths 'x Baths' -> x:
             Baths = Baths.replace('Baths', '')
             Baths = Baths.replace(' ', '')
+            Baths = Baths.replace('\n', '')
             Baths = Baths.rstrip()
 
             # Size x,xxx Sqft -> xxxx:
             Size = Size.replace(',', '')
             Size = Size.replace('Sqft', '')
             Size = Size.replace(' ', '')
+            Size = Size.replace('\n', '')
             Size = Size.rstrip()
 
-            # Creating Series:
-            print(Address, Beds, Baths, Size, Price, Type)
+            # Appending Data to dataframe:
+            listings_data = listings_data.append(pd.Series([Address, Price,
+             Beds, Baths, Size, Type], index=listings_data.columns), ignore_index=True)
 
-
+        return listings_data
 
 
 class Toronto_raw_data(object):
