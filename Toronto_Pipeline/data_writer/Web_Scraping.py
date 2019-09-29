@@ -138,6 +138,7 @@ class Point_2_Homes(object):
 
         return listings_data
 
+    # TODO: Write get_next_url() method
 
 class Toronto_raw_data(object):
     """
@@ -172,7 +173,8 @@ class Toronto_raw_data(object):
             .com'
 
         '''
-
+        # TODO: Create looping fuction that collects and builds Point 2 Homes data
+        # using the .get_listings() and .get_next_url() methods.
 
 # Test Cases:
 Point_2_Homes.get_listings('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html')
