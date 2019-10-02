@@ -188,7 +188,40 @@ class Point_2_Homes(object):
                     pass
 
         return date_object
-    # TODO: Write get_next_url() method
 
+    def get_next_page(self, url):
+        '''The method extracts and parses the html of the Point2Homes page
+        dictated by the url link and returns the link to the next listings page.
 
-#Point_2_Homes().get_listings('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html') 
+        Parameters
+        ----------
+        url : str
+            This is the url from which the html data will be parsed and the next
+            navigational link will be extracted
+
+        Returns
+        -------
+        next_url : str
+            The link to the next listings page
+        '''
+        # Connecting to a webpage:
+        # Header to request for Incapsula:
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)\
+        AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+
+        res = requests.get(url, headers=headers)
+
+        soup = bs4.BeautifulSoup(res.text, 'lxml')
+
+        # Extracting the href link from the page: stored in <a class = pager-next>
+        # Assumes the enxt page href atribute tag is the second tag of said class:
+        next_href = soup.findAll('a', {'class': 'pager-next'})[1].get('href')
+
+        # Building the full url to the next page with the extracted href:
+        next_url = ('https://www.point2homes.com' + next_href)
+
+        return next_url
+
+# Testing
+#Point_2_Homes().get_listings('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html')
+#Point_2_Homes().get_next_page('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html')
