@@ -222,6 +222,5 @@ class Point_2_Homes(object):
 
         return next_url
 
-# Testing
-#Point_2_Homes().get_listings('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html')
-#Point_2_Homes().get_next_page('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html')
+
+Point_2_Homes().get_listings('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html')

@@ -10,7 +10,8 @@ from selenium import webdriver
 # Importing data management packages:
 import pandas as pd
 
-# TODO: Import Website data models:
+# Importing website data models:
+from Website_Data_Models import Point_2_Homes
 
 class Toronto_raw_data(object):
     """
@@ -25,14 +26,16 @@ class Toronto_raw_data(object):
 
     'Point 2 Homes.com' : 'https://www.point2homes.com/CA/
     Real-Estate-Listings/ON/Toronto.html'
-
-
-
     """
+
     def __init__(self):
 
+        # Initializing the Point_2_Homes data model:
+        self.Point_model = Point_2_Homes()
+
         # Point 2 Homes dataframe:
-        self.Point_2_Homes = self.build_point_2_homes()
+        # WARNING: Point_2_Homes data model depreciated due to Incapsula protection:
+        # sself.Point_2_Homes = self.build_point_2_homes()
 
     def build_point_2_homes(self):
         '''This method calls on the point_2_homes object to build the pandas
@@ -45,5 +48,36 @@ class Toronto_raw_data(object):
             .com'
 
         '''
-        # TODO: Create looping fuction that collects and builds Point 2 Homes data
-        # using the .get_listings() and .get_next_url() methods.
+        # Creating the main dataframe from the inital listings link:
+        url = 'https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html'
+
+        # Initializing page1 listings data into main data:
+        main_listings_data = self.Point_model.get_listings(url)
+        print(main_listings_data)
+
+        # Creating a list of url's with which to itterate from:
+        url_list = []
+
+        loop = True
+        while loop == True:
+            try:
+                # Extracting url for next page:
+                url = self.Point_model.get_next_page(url)
+
+                # Appending url to list:
+                url_list.append(url)
+
+            except:
+                break
+
+        # Itterating over the list of urls, appeding dataframes to them:
+        for url in url_list:
+
+            append_data = self.Point_model.get_next_page(url)
+
+            main_listings_data = main_listings_data.append(append_data)
+
+        return main_listings_data
+
+# Test cases:
+Toronto_raw_data()
