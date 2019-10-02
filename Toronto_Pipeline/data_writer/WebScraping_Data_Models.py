@@ -17,7 +17,7 @@ class Point_2_Homes(object):
     to build the main dataframes
     """
 
-    def get_listings(url):
+    def get_listings(self, url):
         '''Method generates a pandas dataframe containing all the real estate
         listings data scraped from a given 'Point 2 Home' url using bs4 and
         requests packages
@@ -49,11 +49,20 @@ class Point_2_Homes(object):
         list = soup.find_all('div', {'class': 'item-cnt clearfix gold'})
 
         # Creating dataframe:
-        listings_data = pd.DataFrame(columns=['Address', 'Price', 'Beds',
+        listings_data = pd.DataFrame(columns=['Date', 'Address', 'Price', 'Beds',
          'Baths', 'Size', 'Type'])
 
         # Populating dataframe with elements found in list soup:
         for element in list:
+
+            # Href link to listings main page: <a class = button-flat-color
+            href = element.findAll('a', {'class': 'button-flat-color'})[0].get('href')
+            # Combining href with url to form link to listings page:
+            link = ('https://www.point2homes.com' + href)
+
+            # Extracting date from listings main page:
+            Date = self.get_date(link)
+
             # Address: <div class = address-container>
             Address = element.findAll('div', {'class': 'address-container'})[0].text
 
@@ -127,7 +136,7 @@ class Point_2_Homes(object):
             Size = Size.rstrip()
 
             # Appending Data to dataframe:
-            listings_data = listings_data.append(pd.Series([Address, Price,
+            listings_data = listings_data.append(pd.Series([Date, Address, Price,
              Beds, Baths, Size, Type], index=listings_data.columns), ignore_index=True)
 
         return listings_data
@@ -165,16 +174,21 @@ class Point_2_Homes(object):
         # Iterating over Div_container searching for <dd> that holds date:
         for element in Div_container:
 
-            # Assumes date is 4th listed <dd> tag in Property Summary div:
-            date = element.find_all('dd')[3].text
+            # Collecting all <dd> tags in the Propery Summary Div_container:
+            dd_tags = element.find_all('dd')
 
-        # Converting date string to datetime object:
-        date_object = datetime.strptime(date, '%d %B %Y')
+            for element in dd_tags:
+
+                # Itterates through each <dd> string trying to convert to datetime
+                # object untill it reaches the date:
+                try:
+                    # NOTE: Very inefficient, update with regx:
+                    date_object = datetime.strptime(element.text, '%d %B %Y')
+                except:
+                    pass
 
         return date_object
-
     # TODO: Write get_next_url() method
 
 
-#Point_2_Homes.get_listings('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html')
-Point_2_Homes().get_date('https://www.point2homes.com/CA/Condo-For-Sale/ON/Toronto/Entertainment-District/25-Oxley-St/81151344.html')
+#Point_2_Homes().get_listings('https://www.point2homes.com/CA/Real-Estate-Listings/ON/Toronto.html') 
